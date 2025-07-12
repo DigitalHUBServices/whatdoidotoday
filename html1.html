@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Do I Do Today? - Activity Suggestions Based on Your Mood</title>
+    <meta name="description" content="Not sure what to do today? Tell us how you're feeling and get personalized activity recommendations to improve your day!">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Chewy&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4D44DB;
+            --accent: #FF6584;
+            --light: #F9F9FF;
+            --dark: #2E2E3A;
+            --gray: #A0A0B0;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --font-main: 'Poppins', sans-serif;
+            --font-fun: 'Chewy', cursive;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-md);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-fun);
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+        }
+        
+        nav ul li a:hover {
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(108, 99, 255, 0.9), rgba(77, 68, 219, 0.9)), url('https://images.unsplash.com/photo-1498855926480-d98e83099315?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-fun);
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid var(--accent);
+            margin: 0 0.5rem;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .cta-button:hover {
+            background-color: transparent;
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Mood Selector Section */
+        .mood-selector {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-family: var(--font-fun);
+            letter-spacing: 1px;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .mood-card {
+            background-color: var(--light);
+            border-radius: 15px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mood-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+        
+        .mood-card.selected {
+            border-color: var(--accent);
+            background-color: rgba(108, 99, 255, 0.05);
+        }
+        
+        .mood-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .mood-card:hover .mood-emoji {
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        .mood-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .mood-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Activity Results */
+        .activity-results {
+            padding: 5rem 0;
+            background-color: var(--light);
+            display: none;
+        }
+        
+        .activity-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        
+        .mood-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .mood-header-emoji {
+            font-size: 3rem;
+            margin-right: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+        
+        .mood-header-text h2 {
+            font-size: 2.5rem;
+            font-family: var(--font-fun);
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .mood-header-text p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .activity-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .activity-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-5px);
+        }
+        
+        .activity-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .activity-icon {
+            margin-right: 1rem;
+            font-size: 2rem;
+        }
+        
+        .activity-card p {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .activity-benefits {
+            background-color: rgba(108, 99, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+        }
+        
+        .activity-benefits h4 {
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .activity-benefits ul {
+            list-style-position: inside;
+            color: var(--dark);
+        }
+        
+        .activity-benefits li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .activity-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .activity-button {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .primary-btn {
+            background-color: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+        
+        .primary-btn:hover {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .secondary-btn {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .secondary-btn:hover {
+            background-color: rgba(108, 99, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Categories Section */
+        .categories {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .category-card {
+            background-color: var(--light);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .category-image {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .category-content {
+            padding: 1.5rem;
+        }
+        
+        .category-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-icon {
+            margin-right: 0.8rem;
+            color: var(--primary);
+        }
+        
+        .category-card p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        .explore-btn {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .explore-btn:hover {
+            color: var(--secondary);
+            transform: translateX(5px);
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 5rem 0;
+            background-color: var(--light);
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            font-size: 5rem;
+            color: rgba(108, 99, 255, 0.1);
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        .testimonial-content {
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+            border: 2px solid var(--primary);
+        }
+        
+        .author-info h4 {
+            margin-bottom: 0.2rem;
+            color: var(--dark);
+        }
+        
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .newsletter h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-fun);
+        }
+        
+        .newsletter p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .newsletter-form button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+        
+        .newsletter-form button:hover {
+            background-color: #e05574;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .footer-logo {
+            font-family: var(--font-fun);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+        
+        .footer-logo span {
+            color: var(--accent);
+        }
+        
+        .footer-about p {
+            opacity: 0.7;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .footer-links h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-links h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-block;
+        }
+        
+        .footer-links ul li a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .footer-contact p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+        
+        .footer-contact i {
+            margin-right: 0.8rem;
+            color: var(--accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 3rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* AdSense Containers */
+        .ad-container {
+            margin: 3rem auto;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            text-align: center;
+            max-width: 1200px;
+        }
+        
+        .ad-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1.5rem;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .cta-button {
+                display: block;
+                margin: 0.8rem auto;
+                width: 80%;
+            }
+            
+            .mood-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+                border-radius: 10px;
+            }
+            
+            .newsletter-form input {
+                border-radius: 10px 10px 0 0;
+                margin-bottom: 1px;
+            }
+            
+            .newsletter-form button {
+                border-radius: 0 0 10px 10px;
+                padding: 1rem;
+                justify-content: center;
+            }
+            
+            .activity-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .activity-button {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .mood-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+        .delay-5 { animation-delay: 1s; }
+        
+        /* Mood-specific colors */
+        .mood-happy { color: #FFC107; }
+        .mood-sad { color: #2196F3; }
+        .mood-angry { color: #F44336; }
+        .mood-bored { color: #9C27B0; }
+        .mood-stressed { color: #4CAF50; }
+        .mood-tired { color: #607D8B; }
+        .mood-excited { color: #FF5722; }
+        .mood-anxious { color: #795548; }
+        
+        /* Mood background effects */
+        .mood-card.happy:hover { background-color: rgba(255, 193, 7, 0.05); }
+        .mood-card.sad:hover { background-color: rgba(33, 150, 243, 0.05); }
+        .mood-card.angry:hover { background-color: rgba(244, 67, 54, 0.05); }
+        .mood-card.bored:hover { background-color: rgba(156, 39, 176, 0.05); }
+        .mood-card.stressed:hover { background-color: rgba(76, 175, 80, 0.05); }
+        .mood-card.tired:hover { background-color: rgba(96, 125, 139, 0.05); }
+        .mood-card.excited:hover { background-color: rgba(255, 87, 34, 0.05); }
+        .mood-card.anxious:hover { background-color: rgba(121, 85, 72, 0.05); }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            opacity: 0;
+            z-index: 9999;
+            animation: confetti-fall 5s linear forwards;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Mood transition */
+        .mood-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Loading spinner */
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(108, 99, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+        
+        .loader-text {
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Mood result decorations */
+        .mood-decoration {
+            position: absolute;
+            font-size: 5rem;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .decoration-1 {
+            top: 20px;
+            left: 20px;
+        }
+        
+        .decoration-2 {
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        /* Responsive adjustments for mood cards */
+        @media (max-width: 600px) {
+            .mood-card h3 {
+                font-size: 1.3rem;
+            }
+            
+            .mood-emoji {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">What Do I Do <span>Today?</span></div>
+            <button class="mobile-menu-btn">☰</button>
+            <nav>
+                <ul>
+                    <li><a href="#mood-selector">Choose Mood</a></li>
+                    <li><a href="#categories">Categories</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <h1>Not Sure What To Do Today?</h1>
+            <p>Tell us how you're feeling and get personalized activity recommendations to improve your day!</p>
+            <div>
+                <a href="#mood-selector" class="cta-button pulse">Choose Your Mood</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- AdSense Banner -->
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <!-- AdSense Code -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <!-- Mood Selector Section -->
+    <section class="mood-selector" id="mood-selector">
+        <div class="section-title fade-in">
+            <h2>How Are You Feeling Today?</h2>
+            <p>Select your current mood to get personalized activity recommendations</p>
+        </div>
+        <div class="mood-grid">
+            <div class="mood-card happy fade-in delay-1" data-mood="happy">
+                <div class="mood-emoji mood-happy">😊</div>
+                <h3>Happy</h3>
+                <p>Feeling joyful and positive</p>
+            </div>
+            <div class="mood-card sad fade-in delay-2" data-mood="sad">
+                <div class="mood-emoji mood-sad">😢</div>
+                <h3>Sad</h3>
+                <p>Feeling down or blue</p>
+            </div>
+            <div class="mood-card angry fade-in delay-3" data-mood="angry">
+                <div class="mood-emoji mood-angry">😠</div>
+                <h3>Angry</h3>
+                <p>Feeling frustrated or mad</p>
+            </div>
+            <div class="mood-card bored fade-in delay-4" data-mood="bored">
+                <div class="mood-emoji mood-bored">😑</div>
+                <h3>Bored</h3>
+                <p>Need something exciting</p>
+            </div>
+            <div class="mood-card stressed fade-in delay-1" data-mood="stressed">
+                <div class="mood-emoji mood-stressed">😫</div>
+                <h3>Stressed</h3>
+                <p>Feeling overwhelmed</p>
+            </div>
+            <div class="mood-card tired fade-in delay-2" data-mood="tired">
+                <div class="mood-emoji mood-tired">😴</div>
+                <h3>Tired</h3>
+                <p>Low on energy</p>
+            </div>
+            <div class="mood-card excited fade-in delay-3" data-mood="excited">
+                <div class="mood-emoji mood-excited">🤩</div>
+                <h3>Excited</h3>
+                <p>Full of energy</p>
+            </div>
+            <div class="mood-card anxious fade-in delay-4" data-mood="anxious">
+                <div class="mood-emoji mood-anxious">😰</div>
+                <h3>Anxious</h3>
+                <p>Feeling nervous or worried</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Activity Results Section -->
+    <section class="activity-results" id="activity-results">
+        <div class="activity-container">
+            <div class="mood-header">
+                <div class="mood-header-emoji" id="result-emoji">😊</div>
+                <div class="mood-header-text">
+                    <h2 id="result-mood">Happy</h2>
+                    <p>Here are our recommendations for you</p>
+                </div>
+            </div>
+            
+            <div class="activity-card">
+                <div class="mood-decoration decoration-1" id="decoration-1">😊</div>
+                <div class="mood-decoration decoration-2" id="decoration-2">😊</div>
+                <h3><i class="fas fa-lightbulb activity-icon"></i> <span id="activity-title">Spread Your Happiness</span></h3>
+                <p id="activity-description">When you're feeling happy, it's the perfect time to share that positivity with others. Your good mood can be contagious and make a real difference in someone else's day.</p>
+                
+                <div class="activity-benefits">
+                    <h4><i class="fas fa-heart"></i> Why This Helps:</h4>
+                    <ul id="activity-benefits">
+                        <li>Strengthens social connections</li>
+                        <li>Reinforces your positive feelings</li>
+                        <li>Creates a ripple effect of positivity</li>
+                        <li>Boosts your own happiness further</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="activity-buttons">
+                <a href="#" class="activity-button primary-btn" id="primary-action"><i class="fas fa-play"></i> Try This Activity</a>
+                <a href="#mood-selector" class="activity-button secondary-btn"><i class="fas fa-redo"></i> Choose Different Mood</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- AdSense In-Article -->
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <!-- AdSense Code -->
+        <ins class="adsbygoogle"
+             style="display:block; text-align:center;"
+             data-ad-format="fluid"
+             data-ad-layout="in-article"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <!-- Categories Section -->
+    <section class="categories" id="categories">
+        <div class="section-title fade-in">
+            <h2>Explore Activity Categories</h2>
+            <p>Discover different types of activities for any mood or situation</p>
+        </div>
+        <div class="categories-grid">
+            <div class="category-card fade-in delay-1">
+                <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Creative Activities" class="category-image">
+                <div class="category-content">
+                    <h3><i class="fas fa-paint-brush category-icon"></i> Creative</h3>
+                    <p>Express yourself through art, writing, music and other creative outlets.</p>
+                    <a href="#" class="explore-btn">Explore <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="category-card fade-in delay-2">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Physical Activities" class="category-image">
+                <div class="category-content">
+                    <h3><i class="fas fa-running category-icon"></i> Physical</h3>
+                    <p>Get moving with exercises, sports and outdoor adventures.</p>
+                    <a href="#" class="explore-btn">Explore <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="category-card fade-in delay-3">
+                <img src="https://images.unsplash.com/photo-1505576399279-565b52d4ac71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Social Activities" class="category-image">
+                <div class="category-content">
+                    <h3><i class="fas fa-users category-icon"></i> Social</h3>
+                    <p>Connect with others through group activities and community events.</p>
+                    <a href="#" class="explore-btn">Explore <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="category-card fade-in delay-4">
+                <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Learning Activities" class="category-image">
+                <div class="category-content">
+                    <h3><i class="fas fa-book category-icon"></i> Learning</h3>
+                    <p>Expand your knowledge with educational and skill-building activities.</p>
+                    <a href="#" class="explore-btn">Explore <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="section-title fade-in">
+            <h2>What People Are Saying</h2>
+            <p>Discover how others have used our recommendations to improve their days</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card fade-in delay-1">
+                <div class="testimonial-content">
+                    "When I was feeling really down last month, the 'sad' mood recommendation suggested I try painting while listening to uplifting music. It completely turned my day around and now it's become my go-to activity!"
+                </div>
+                <div class="testimonial-author">
+                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sarah J." class="author-avatar">
+                    <div class="author-info">
+                        <h4>Sarah J.</h4>
+                        <p>Teacher, 28</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card fade-in delay-2">
+                <div class="testimonial-content">
+                    "The bored recommendations saved me during lockdown. I never would have thought to try geocaching on my own, but now it's my favorite weekend activity that gets me outside and exploring."
+                </div>
+                <div class="testimonial-author">
+                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Michael T." class="author-avatar">
+                    <div class="author-info">
+                        <h4>Michael T.</h4>
+                        <p>Software Developer, 35</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card fade-in delay-3">
+                <div class="testimonial-content">
+                    "As someone who struggles with anxiety, the calming techniques suggested when I selected 'anxious' have been life-changing. The 4-7-8 breathing method is now part of my daily routine."
+                </div>
+                <div class="testimonial-author">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya K." class="author-avatar">
+                    <div class="author-info">
+                        <h4>Priya K.</h4>
+                        <p>Nurse, 41</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter" id="about">
+        <div class="newsletter-container fade-in">
+            <h2>Get Daily Mood Boosters</h2>
+            <p>Subscribe to receive personalized activity ideas based on your mood straight to your inbox</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Your email address" required>
+                <button type="submit">Subscribe <i class="fas fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-about">
+                <div class="footer-logo">What Do I Do <span>Today?</span></div>
+                <p>Helping you find the perfect activity for any mood since 2023. Our mission is to make every day a little better.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#mood-selector">Mood Selector</a></li>
+                    <li><a href="#categories">Activity Categories</a></li>
+                    <li><a href="#testimonials">Success Stories</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Mental Health Resources</a></li>
+                    <li><a href="#">Community Forum</a></li>
+                    <li><a href="#">Activity Challenges</a></li>
+                    <li><a href="#">Research & Studies</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope"></i> hello@whatdoido.today</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Activity Lane, Moodville</p>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2023 What Do I Do Today? All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+        </div>
+    </footer>
+
+    <!-- Loading Spinner -->
+    <div class="loader" id="loader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Finding perfect activities...</div>
+    </div>
+
+    <script>
+        // Mood data with activities and benefits
+        const moodData = {
+            happy: {
+                emoji: "😊",
+                title: "Spread Your Happiness",
+                description: "When you're feeling happy, it's the perfect time to share that positivity with others. Your good mood can be contagious and make a real difference in someone else's day.",
+                benefits: [
+                    "Strengthens social connections",
+                    "Reinforces your positive feelings",
+                    "Creates a ripple effect of positivity",
+                    "Boosts your own happiness further"
+                ],
+                action: "Share a Compliment",
+                decorations: ["😊", "🌟"],
+                redirectUrls: [
+                    "https://www.randomactsofkindness.org/",
+                    "https://www.happiness.com/",
+                    "https://www.actionforhappiness.org/"
+                ]
+            },
+            sad: {
+                emoji: "😢",
+                title: "Comfort & Uplift Yourself",
+                description: "When sadness comes, be gentle with yourself. Try activities that comfort your soul while gently lifting your spirits. Small steps can lead to brighter days.",
+                benefits: [
+                    "Validates your emotions safely",
+                    "Provides healthy coping mechanisms",
+                    "Slowly shifts negative thought patterns",
+                    "Restores emotional balance"
+                ],
+                action: "Try a Comforting Activity",
+                decorations: ["☔", "🌈"],
+                redirectUrls: [
+                    "https://www.helpguide.org/articles/depression/coping-with-depression.htm",
+                    "https://www.nami.org/About-Mental-Illness/Mental-Health-Conditions/Depression",
+                    "https://www.therapistaid.com/worksheets/coping-skills-depression"
+                ]
+            },
+            angry: {
+                emoji: "😠",
+                title: "Channel Your Anger Positively",
+                description: "Anger is energy that needs constructive release. These activities will help you process intense feelings without causing harm to yourself or others.",
+                benefits: [
+                    "Safely releases pent-up energy",
+                    "Prevents regrettable actions",
+                    "Helps identify underlying issues",
+                    "Transforms anger into motivation"
+                ],
+                action: "Release Anger Safely",
+                decorations: ["💢", "⚡"],
+                redirectUrls: [
+                    "https://www.apa.org/topics/anger/control",
+                    "https://www.mayoclinic.org/healthy-lifestyle/adult-health/in-depth/anger-management/art-20045434",
+                    "https://www.verywellmind.com/anger-management-strategies-4178870"
+                ]
+            },
+            bored: {
+                emoji: "😑",
+                title: "Break the Monotony",
+                description: "Boredom is actually an opportunity in disguise! It's your brain asking for stimulation. Try something novel to reignite your curiosity and engagement.",
+                benefits: [
+                    "Stimulates creativity and new ideas",
+                    "Prevents unhealthy habits from boredom",
+                    "Expands your skills and interests",
+                    "Makes life more interesting"
+                ],
+                action: "Try Something New",
+                decorations: ["🎲", "🎯"],
+                redirectUrls: [
+                    "https://www.boredpanda.com/things-to-do-when-bored/",
+                    "https://www.mentalfloss.com/article/575312/things-to-do-when-bored",
+                    "https://www.goodhousekeeping.com/life/g27248166/things-to-do-when-bored/"
+                ]
+            },
+            stressed: {
+                emoji: "😫",
+                title: "De-stress & Recharge",
+                description: "When stress overwhelms you, it's crucial to pause and reset. These activities will help calm your nervous system and restore your sense of balance.",
+                benefits: [
+                    "Lowers cortisol (stress hormone) levels",
+                    "Prevents burnout and exhaustion",
+                    "Improves decision-making ability",
+                    "Restores emotional equilibrium"
+                ],
+                action: "Begin Relaxing Now",
+                decorations: ["🍃", "💆"],
+                redirectUrls: [
+                    "https://www.mind.org.uk/information-support/tips-for-everyday-living/relaxation/relaxation-tips/",
+                    "https://www.helpguide.org/articles/stress/relaxation-techniques-for-stress-relief.htm",
+                    "https://www.mayoclinic.org/healthy-lifestyle/stress-management/in-depth/stress-relief/art-20044456"
+                ]
+            },
+            tired: {
+                emoji: "😴",
+                title: "Restorative Activities",
+                description: "When you're running on empty, choose activities that either give you energy or allow you to recharge without guilt. Listening to your body is self-care.",
+                benefits: [
+                    "Respects your body's need for rest",
+                    "Provides quality relaxation",
+                    "Prevents exhaustion-related mistakes",
+                    "Improves next-day energy levels"
+                ],
+                action: "Recharge Your Energy",
+                decorations: ["🌙", "🛌"],
+                redirectUrls: [
+                    "https://www.sleepfoundation.org/sleep-hygiene/healthy-sleep-tips",
+                    "https://www.healthline.com/health/mental-exhaustion",
+                    "https://www.webmd.com/balance/features/what-to-do-when-you-feel-tired"
+                ]
+            },
+            excited: {
+                emoji: "🤩",
+                title: "Harness Your Excitement",
+                description: "This burst of energy and enthusiasm is precious! Channel it into activities that satisfy your zest while creating meaningful experiences or results.",
+                benefits: [
+                    "Maximizes productive energy bursts",
+                    "Creates memorable experiences",
+                    "Boosts motivation for future tasks",
+                    "Increases overall life satisfaction"
+                ],
+                action: "Channel Your Energy",
+                decorations: ["🎉", "✨"],
+                redirectUrls: [
+                    "https://www.lifehack.org/articles/productivity/7-ways-to-harness-your-energy-and-increase-productivity.html",
+                    "https://www.forbes.com/sites/ashleystahl/2018/05/08/5-ways-to-channel-your-energy-when-youre-feeling-overly-excited/?sh=1c9a8c4a3a7b",
+                    "https://www.psychologytoday.com/us/blog/the-science-success/201110/how-use-your-excitement-get-what-you-want-life"
+                ]
+            },
+            anxious: {
+                emoji: "😰",
+                title: "Calm Your Anxiety",
+                description: "Anxiety makes everything feel overwhelming. These grounding activities will help quiet your mind and bring you back to the present moment safely.",
+                benefits: [
+                    "Reduces physical symptoms of anxiety",
+                    "Breaks cycles of worried thoughts",
+                    "Restores sense of control",
+                    "Develops long-term coping skills"
+                ],
+                action: "Start Calming Down",
+                decorations: ["🌀", "🧘"],
+                redirectUrls: [
+                    "https://adaa.org/tips",
+                    "https://www.healthline.com/health/mental-health/how-to-cope-with-anxiety",
+                    "https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet"
+                ]
+            }
+        };
+
+        // Specific activities for each mood
+        const moodActivities = {
+            happy: [
+                {
+                    title: "Compliment Spree",
+                    description: "Make someone's day by giving genuine compliments to at least 5 people today. Could be friends, family, or even strangers (like complimenting a barista's smile).",
+                    benefits: [
+                        "Strengthens your relationships",
+                        "Makes others feel valued",
+                        "Reinforces your positive outlook",
+                        "Creates a ripple effect of kindness"
+                    ],
+                    action: "Give Your First Compliment",
+                    redirectUrl: "https://www.randomactsofkindness.org/"
+                },
+                {
+                    title: "Create a Happiness Jar",
+                    description: "Decorate a jar and fill it with notes about happy memories, things you're grateful for, or positive affirmations. Read them when you need a boost.",
+                    benefits: [
+                        "Creates a future happiness resource",
+                        "Encourages mindfulness of joys",
+                        "Simple creative outlet",
+                        "Tangible reminder of good times"
+                    ],
+                    action: "Start Your Happiness Jar",
+                    redirectUrl: "https://www.happiness.com/"
+                },
+                {
+                    title: "Dance Party",
+                    description: "Put on your favorite upbeat music and have a solo dance party. Let loose and move your body with no self-consciousness!",
+                    benefits: [
+                        "Releases endorphins (happy hormones)",
+                        "Great physical exercise",
+                        "Boosts body positivity",
+                        "Fun way to express yourself"
+                    ],
+                    action: "Play Your Happy Song",
+                    redirectUrl: "https://www.actionforhappiness.org/"
+                }
+            ],
+            sad: [
+                {
+                    title: "Comfort Movie Marathon",
+                    description: "Create a cozy nest with blankets and pillows, make some tea or hot chocolate, and watch your favorite comforting movies or shows.",
+                    benefits: [
+                        "Provides emotional safety",
+                        "Distracts from rumination",
+                        "Nostalgia can be healing",
+                        "Self-care without pressure"
+                    ],
+                    action: "Start Your Cozy Time",
+                    redirectUrl: "https://www.helpguide.org/articles/depression/coping-with-depression.htm"
+                },
+                {
+                    title: "Nature Connection",
+                    description: "Spend time in nature - walk in a park, sit by water, or just observe trees. Notice small beautiful details in the natural world.",
+                    benefits: [
+                        "Nature has calming effects",
+                        "Gets you out of your head",
+                        "Gentle physical activity",
+                        "Reconnects you with life's rhythms"
+                    ],
+                    action: "Visit a Green Space",
+                    redirectUrl: "https://www.nami.org/About-Mental-Illness/Mental-Health-Conditions/Depression"
+                },
+                {
+                    title: "Creative Expression",
+                    description: "Express your feelings through art - journal, paint, collage, or even just scribble colors that match your mood. No skill required.",
+                    benefits: [
+                        "Healthy emotional release",
+                        "Process feelings non-verbally",
+                        "Creates something from pain",
+                        "Can provide new perspectives"
+                    ],
+                    action: "Express Yourself Creatively",
+                    redirectUrl: "https://www.therapistaid.com/worksheets/coping-skills-depression"
+                }
+            ],
+            bored: [
+                {
+                    title: "Learn a Useless Skill",
+                    description: "Pick something fun but impractical to learn - juggling, pen spinning, whistling with your fingers, or memorizing digits of pi.",
+                    benefits: [
+                        "Engages your brain playfully",
+                        "No pressure to be useful",
+                        "Might discover hidden talents",
+                        "Conversation starter later"
+                    ],
+                    action: "Pick a Silly Skill",
+                    redirectUrl: "https://www.boredpanda.com/things-to-do-when-bored/"
+                },
+                {
+                    title: "Reverse Scavenger Hunt",
+                    description: "Hide small objects or notes around your home/neighborhood for others to find. Include uplifting messages or small treats.",
+                    benefits: [
+                        "Creative way to engage with space",
+                        "Brings joy to strangers",
+                        "Uses problem-solving skills",
+                        "Might start a fun trend"
+                    ],
+                    action: "Plan Your First Hide",
+                    redirectUrl: "https://www.mentalfloss.com/article/575312/things-to-do-when-bored"
+                },
+                {
+                    title: "Time Capsule",
+                    description: "Create a time capsule with current items that represent your life now - photos, receipts, small mementos. Bury it or hide it to find later.",
+                    benefits: [
+                        "Perspective on present moment",
+                        "Fun future surprise",
+                        "Encourages self-reflection",
+                        "Creative documentation"
+                    ],
+                    action: "Start Collecting Items",
+                    redirectUrl: "https://www.goodhousekeeping.com/life/g27248166/things-to-do-when-bored/"
+                }
+            ],
+            angry: [
+                {
+                    title: "Vigorous Cleaning",
+                    description: "Channel your anger into cleaning something intensely - scrub floors, organize a closet, or deep clean your kitchen. Physical exertion helps release the energy.",
+                    benefits: [
+                        "Productive use of angry energy",
+                        "Results in cleaner space",
+                        "Physical exertion releases tension",
+                        "Visual progress is satisfying"
+                    ],
+                    action: "Pick a Cleaning Project",
+                    redirectUrl: "https://www.apa.org/topics/anger/control"
+                },
+                {
+                    title: "Scream Therapy",
+                    description: "Find a private place (car, pillow, remote outdoor area) and allow yourself to scream loudly. Release that pent-up energy vocally.",
+                    benefits: [
+                        "Physically releases tension",
+                        "Emotional catharsis",
+                        "Prevents internalizing anger",
+                        "Can be surprisingly fun"
+                    ],
+                    action: "Find Your Scream Spot",
+                    redirectUrl: "https://www.mayoclinic.org/healthy-lifestyle/adult-health/in-depth/anger-management/art-20045434"
+                },
+                {
+                    title: "Angry Art",
+                    description: "Create art that expresses your anger - aggressive brush strokes, dark colors, chaotic collage. Destroy it afterwards if you want.",
+                    benefits: [
+                        "Safe emotional expression",
+                        "Transforms anger into creation",
+                        "No need to make it 'good'",
+                        "Provides perspective afterwards"
+                    ],
+                    action: "Make Angry Art",
+                    redirectUrl: "https://www.verywellmind.com/anger-management-strategies-4178870"
+                }
+            ],
+            stressed: [
+                {
+                    title: "5-4-3-2-1 Grounding",
+                    description: "Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste. This sensory exercise brings you back to the present.",
+                    benefits: [
+                        "Interrupts stress spirals",
+                        "Quick and accessible anywhere",
+                        "Connects you with your senses",
+                        "Simple but effective technique"
+                    ],
+                    action: "Try Grounding Now",
+                    redirectUrl: "https://www.mind.org.uk/information-support/tips-for-everyday-living/relaxation/relaxation-tips/"
+                },
+                {
+                    title: "Progressive Muscle Relaxation",
+                    description: "Tense each muscle group for 5 seconds then release, working from toes to head. Notice the contrast between tension and relaxation.",
+                    benefits: [
+                        "Releases physical tension",
+                        "Teaches body relaxation",
+                        "Focuses mind on body",
+                        "Can lower blood pressure"
+                    ],
+                    action: "Start With Your Feet",
+                    redirectUrl: "https://www.helpguide.org/articles/stress/relaxation-techniques-for-stress-relief.htm"
+                },
+                {
+                    title: "Worry Time",
+                    description: "Set a 15-minute timer to write down all worries. When time's up, close the book and postpone more worrying until your next scheduled worry time.",
+                    benefits: [
+                        "Contains endless worrying",
+                        "Makes worries feel manageable",
+                        "Creates structure for stress",
+                        "Reveals recurring patterns"
+                    ],
+                    action: "Schedule Worry Time",
+                    redirectUrl: "https://www.mayoclinic.org/healthy-lifestyle/stress-management/in-depth/stress-relief/art-20044456"
+                }
+            ],
+            tired: [
+                {
+                    title: "Power Nap",
+                    description: "Set a 20-minute timer, get comfortable, and allow yourself to rest without pressure to sleep. Even quiet rest helps recharge.",
+                    benefits: [
+                        "Restores alertness",
+                        "Improves mood and patience",
+                        "Enhances later nighttime sleep",
+                        "Quick energy boost"
+                    ],
+                    action: "Set a Nap Timer",
+                    redirectUrl: "https://www.sleepfoundation.org/sleep-hygiene/healthy-sleep-tips"
+                },
+                {
+                    title: "Gentle Stretching",
+                    description: "Do slow, gentle stretches focusing on areas holding tension - neck, shoulders, back. Move slowly with deep breaths.",
+                    benefits: [
+                        "Relieves muscle tension",
+                        "Increases blood flow",
+                        "Mind-body connection",
+                        "Low energy requirement"
+                    ],
+                    action: "Stretch Gently",
+                    redirectUrl: "https://www.healthline.com/health/mental-exhaustion"
+                },
+                {
+                    title: "Audio Escape",
+                    description: "Listen to an audiobook, podcast, or calming music with your eyes closed. Lets you rest while mildly engaged.",
+                    benefits: [
+                        "Rest without pressure to sleep",
+                        "Distracts from fatigue thoughts",
+                        "Can learn while resting",
+                        "Easier than reading when tired"
+                    ],
+                    action: "Pick an Audio Experience",
+                    redirectUrl: "https://www.webmd.com/balance/features/what-to-do-when-you-feel-tired"
+                }
+            ],
+            excited: [
+                {
+                    title: "Start a Passion Project",
+                    description: "Channel your excitement into beginning something you've been wanting to try - a creative endeavor, learning project, or personal challenge.",
+                    benefits: [
+                        "Harnesses energy productively",
+                        "Creates momentum",
+                        "Turns excitement into results",
+                        "Builds new skills"
+                    ],
+                    action: "Brainstorm Project Ideas",
+                    redirectUrl: "https://www.lifehack.org/articles/productivity/7-ways-to-harness-your-energy-and-increase-productivity.html"
+                },
+                {
+                    title: "Social Adventure",
+                    description: "Gather friends for an impromptu adventure - try a new activity, explore a new area, or create fun challenges together.",
+                    benefits: [
+                        "Shares positive energy",
+                        "Creates shared memories",
+                        "Makes the most of high-energy time",
+                        "Strengthens relationships"
+                    ],
+                    action: "Plan an Adventure",
+                    redirectUrl: "https://www.forbes.com/sites/ashleystahl/2018/05/08/5-ways-to-channel-your-energy-when-youre-feeling-overly-excited/?sh=1c9a8c4a3a7b"
+                },
+                {
+                    title: "Energy-Burning Workout",
+                    description: "Do an intense workout that matches your energy level - running, dancing, martial arts, or competitive sports.",
+                    benefits: [
+                        "Healthy outlet for energy",
+                        "Releases endorphins",
+                        "Improves physical fitness",
+                        "Can lead to better sleep later"
+                    ],
+                    action: "Choose Your Workout",
+                    redirectUrl: "https://www.psychologytoday.com/us/blog/the-science-success/201110/how-use-your-excitement-get-what-you-want-life"
+                }
+            ],
+            anxious: [
+                {
+                    title: "Box Breathing",
+                    description: "Breathe in for 4 counts, hold for 4, exhale for 4, hold for 4. Repeat for several minutes to calm your nervous system.",
+                    benefits: [
+                        "Slows racing thoughts",
+                        "Regulates physical anxiety symptoms",
+                        "Portable and discreet",
+                        "Resets fight-or-flight response"
+                    ],
+                    action: "Start Box Breathing",
+                    redirectUrl: "https://adaa.org/tips"
+                },
+                {
+                    title: "Anxiety Inventory",
+                    description: "Write down everything you're anxious about, then categorize: things you can control (make plans for these) vs. can't (practice accepting).",
+                    benefits: [
+                        "Gets worries out of your head",
+                        "Creates sense of control",
+                        "Reveals irrational fears",
+                        "Prioritizes actionable items"
+                    ],
+                    action: "Start Your Inventory",
+                    redirectUrl: "https://www.healthline.com/health/mental-health/how-to-cope-with-anxiety"
+                },
+                {
+                    title: "Weighted Blanket Time",
+                    description: "Wrap yourself in a weighted blanket (or heavy comforter) and focus on the comforting pressure while breathing deeply.",
+                    benefits: [
+                        "Deep pressure calms nervous system",
+                        "Creates safe, cocooned feeling",
+                        "Reduces physical anxiety symptoms",
+                        "Encourages present-moment focus"
+                    ],
+                    action: "Create a Cozy Nest",
+                    redirectUrl: "https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet"
+                }
+            ]
+        };
+
+        // DOM Elements
+        const moodCards = document.querySelectorAll('.mood-card');
+        const activityResults = document.querySelector('.activity-results');
+        const resultEmoji = document.getElementById('result-emoji');
+        const resultMood = document.getElementById('result-mood');
+        const activityTitle = document.getElementById('activity-title');
+        const activityDescription = document.getElementById('activity-description');
+        const activityBenefits = document.getElementById('activity-benefits');
+        const primaryAction = document.getElementById('primary-action');
+        const decoration1 = document.getElementById('decoration-1');
+        const decoration2 = document.getElementById('decoration-2');
+        const loader = document.getElementById('loader');
+
+        // Current selected activity
+        let currentActivity = null;
+
+        // Mood selection handler
+        moodCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const mood = this.getAttribute('data-mood');
+                showLoader();
+                
+                // Remove selected class from all cards
+                moodCards.forEach(c => c.classList.remove('selected'));
+                
+                // Add selected class to clicked card
+                this.classList.add('selected');
+                
+                // Show confetti for happy mood
+                if (mood === 'happy') {
+                    createConfetti();
+                }
+                
+                // Delay to show loading and allow animations
+                setTimeout(() => {
+                    updateActivityResults(mood);
+                    hideLoader();
+                    
+                    // Scroll to results
+                    activityResults.style.display = 'block';
+                    activityResults.scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            });
+        });
+
+        // Update activity results based on selected mood
+        function updateActivityResults(mood) {
+            const data = moodData[mood];
+            const activities = moodActivities[mood];
+            
+            // Randomly select an activity for this mood
+            currentActivity = activities[Math.floor(Math.random() * activities.length)];
+            
+            // Update main mood display
+            resultEmoji.textContent = data.emoji;
+            resultEmoji.className = `mood-header-emoji mood-${mood}`;
+            resultMood.textContent = mood.charAt(0).toUpperCase() + mood.slice(1);
+            
+            // Update activity details
+            activityTitle.textContent = currentActivity.title;
+            activityDescription.textContent = currentActivity.description;
+            
+            // Update benefits list
+            activityBenefits.innerHTML = '';
+            currentActivity.benefits.forEach(benefit => {
+                const li = document.createElement('li');
+                li.textContent = benefit;
+                activityBenefits.appendChild(li);
+            });
+            
+            // Update primary action button with redirect URL
+            primaryAction.innerHTML = `<i class="fas fa-play"></i> ${currentActivity.action}`;
+            primaryAction.href = currentActivity.redirectUrl;
+            primaryAction.target = "_blank";
+            
+            // Update decorations
+            decoration1.textContent = data.decorations[0];
+            decoration2.textContent = data.decorations[1];
+            decoration1.className = 'mood-decoration decoration-1 mood-' + mood;
+            decoration2.className = 'mood-decoration decoration-2 mood-' + mood;
+            
+            // Add mood class to activity card for color scheme
+            document.querySelector('.activity-card').className = `activity-card mood-${mood}`;
+        }
+
+        // Show loading spinner
+        function showLoader() {
+            loader.style.display = 'flex';
+        }
+
+        // Hide loading spinner
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#6C63FF', '#FF6584', '#FFC107', '#4CAF50', '#2196F3'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('nav ul');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+                this.innerHTML = '☰';
+            } else {
+                navMenu.style.display = 'flex';
+                this.innerHTML = '✕';
+            }
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('nav ul li a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    navMenu.style.display = 'none';
+                    mobileMenuBtn.innerHTML = '☰';
+                }
+            });
+        });
+
+        // Initialize animations on scroll
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.fade-in');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+
+        // Initialize AdSense
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</body>
+</html>
